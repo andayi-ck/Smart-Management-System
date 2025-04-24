@@ -277,3 +277,77 @@ def symptom_checker():
 def connect_farmers():
     farmers = Farmer.query.all()
     return render_template('connect-farmers.html', farmers=farmers)
+
+
+
+
+    
+@app.route('/search_vets', methods=['POST'])
+def search_vets():
+    data = request.get_json()
+    vet_name = data.get('vetName', '').lower()
+    specialty = data.get('specialty', '').lower()
+    clinic = data.get('clinic', '').lower()
+    animal_type = data.get('animalType', '').lower()
+
+    # Build the query
+    query = Vet.query
+
+    # Filter by vet name
+    if vet_name:
+        query = query.filter(Vet.name.ilike(f'%{vet_name}%'))
+
+    # Filter by specialty (disease expertise)
+    if specialty:
+        # Remove common suffixes like "expert" or "specialist" for broader matching
+        specialty_keywords = [specialty]
+        for suffix in ['expert', 'specialist']:
+            if specialty.endswith(suffix):
+                specialty_keywords.append(specialty.replace(suffix, '').strip())
+        # Search for any of the keywords in the specialty field
+        specialty_conditions = [Vet.specialty.ilike(f'%{keyword}%') for keyword in specialty_keywords]
+        query = query.filter(or_(*specialty_conditions))
+
+    # Filter by clinic (locality)
+    if clinic:
+        query = query.filter(Vet.clinic.ilike(f'%{clinic}%'))
+
+    # Filter by animal type (specific animal or category)
+    if animal_type:
+        # Map animals to categories and keywords
+        animal_category_map = {
+            'dog': ['dog', 'small animals', 'mammal'],
+            'cat': ['cat', 'small animals', 'mammal'],
+            'cow': ['cow', 'large animals', 'mammal'],
+            'horse': ['horse', 'large animals', 'mammal'],
+            'pig': ['pig', 'large animals', 'mammal'],
+            'goat': ['goat', 'large animals', 'mammal'],
+            'sheep': ['sheep', 'large animals', 'mammal'],
+            'parrot': ['parrot', 'avian', 'bird'],
+            'chicken': ['chicken', 'avian', 'bird'],
+            'rabbit': ['rabbit', 'small animals', 'mammal'],
+            'hamster': ['hamster', 'small animals', 'mammal']
+        }
+
+        # Get the list of keywords to search for in specialty
+        search_keywords = animal_category_map.get(animal_type, [animal_type])
+        animal_conditions = [Vet.specialty.ilike(f'%{keyword}%') for keyword in search_keywords]
+        query = query.filter(or_(*animal_conditions))
+
+    vets = query.all()
+
+    # Convert vets to a JSON-serializable format
+    vet_list = [{
+        'id': vet.id,
+        'name': vet.name,
+        'specialty': vet.specialty,
+        'clinic': vet.clinic,
+        'experience': vet.experience,
+        'availability': vet.availability,
+        'accepting': vet.accepting,
+        'rating': vet.rating,
+        'price': vet.price,
+        'image_url': vet.image_url
+    } for vet in vets]
+
+    return jsonify({'vets': vet_list})
