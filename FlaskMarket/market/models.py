@@ -66,23 +66,6 @@ class User(db.Model, UserMixin):
     def can_purchase(self, item_obj):
         return self.budget >= item_obj.price
     
-    
-    
-class Veterinary(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    vet_id = db.Column(db.String(10), unique=True, nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    specialty = db.Column(db.String(100), nullable=False)
-    clinic = db.Column(db.String(100), nullable=False)
-    experience = db.Column(db.Integer, nullable=False)
-    availability = db.Column(db.String(100), nullable=False)
-    accepting = db.Column(db.String(100), nullable=False)
-    rating = db.Column(db.String(20), nullable=False)
-    price = db.Column(db.Integer, nullable=False)
-    image_url = db.Column(db.String(200), nullable=False)
-
-    def __repr__(self):
-        return f"Veterinary('{self.name}', '{self.specialty}')"
 class Farmer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -96,3 +79,45 @@ class Illness(db.Model):
 
     def __repr__(self):
         return f"Illness('{self.name}', '{self.required_specialist}')"
+class Notification(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    read = db.Column(db.Boolean, default=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user = db.relationship('User', backref='notifications')
+    category = db.Column(db.String(50), nullable=True)
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='sent_messages')
+    receiver = db.relationship('User', foreign_keys=[receiver_id], backref='received_messages')
+
+class Campaign(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    location = db.Column(db.String(100), nullable=False)
+    date = db.Column(db.DateTime, nullable=False)
+    organizer = db.Column(db.String(100), nullable=False)
+    posted_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+class Tip(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    posted_at = db.Column(db.DateTime, default=datetime.utcnow)
+    author = db.relationship('User', backref='tips')
+
+class GeneralInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    category = db.Column(db.String, nullable=True)  # e.g., health, feeding, medication, care
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
