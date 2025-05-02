@@ -351,3 +351,49 @@ def search_vets():
     } for vet in vets]
 
     return jsonify({'vets': vet_list})
+
+
+
+@app.route('/admin/create_event', methods=['GET', 'POST'])
+@login_required
+def create_event():
+    if current_user.role != 'admin':
+        flash('Unauthorized access. Only admins can create events.', 'error')
+        return redirect(url_for('home_page'))
+    
+    form = CreateEventForm()
+    if form.validate_on_submit():
+        event_date = datetime.combine(form.event_date.data, time(0, 0))
+        new_event = Event(
+            title=form.title.data,
+            content=form.content.data,
+            event_date=event_date
+        )
+        db.session.add(new_event)
+        db.session.commit()
+        flash('Event created successfully!', 'success')
+        return redirect(url_for('home_page'))
+    
+    return render_template('create_event.html', form=form)
+
+
+
+
+@app.route('/unsubscribe/<email>')
+def unsubscribe(email):
+    user = User.query.filter_by(email_address=email).first()
+    if user and user.role == 'subscriber':
+        db.session.delete(user)
+        db.session.commit()
+        flash('You have been unsubscribed successfully.', 'success')
+    else:
+        flash('Email not found or not a subscriber.', 'error')
+    return redirect(url_for('home_page'))
+
+
+
+
+@app.route('/analytics_dashboard')
+def analytics_dashboard():
+    return render_template('analytics_dashboard.html')
+
