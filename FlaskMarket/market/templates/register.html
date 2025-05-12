@@ -135,5 +135,35 @@
             border-bottom: 1px solid #0a58ca; /* Underline on hover */
         }
 
+        /* --- Form Input Styling --- */
+        .form-register .form-label {
+            font-weight: 600;
+            font-size: 0.8rem; /* Slightly smaller label */
+            margin-bottom: 0.4rem;
+            color: #495057;
+        }
+
+        .form-register .form-control,
+        .form-register .form-select {
+            border: 1px solid #ced4da;
+            border-radius: 6px; /* Consistent radius */
+            padding: 0.75rem 1rem; /* Comfortable padding */
+            font-size: 0.95rem;
+            margin-bottom: 1.3rem; /* Consistent spacing */
+            background-color: #f8f9fa;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,.075);
+            transition: border-color .2s ease-in-out, box-shadow .2s ease-in-out, background-color .2s ease;
+        }
+        .form-register .form-control:focus,
+        .form-register .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,.075), 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            background-color: #fff;
+            outline: none; /* Remove default outline */
+        }
+
+
+        
+
         
 
