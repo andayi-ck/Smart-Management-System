@@ -263,5 +263,22 @@
                      alt="Livestock Analytics Bottom Logo">
             </div>
         </div>
+        <div class="col-12 col-md-6 right-column">
+            <div class="form-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      {% set alert_icon = 'info-fill' %}
+                      {% if category == 'success' %}{% set alert_icon = 'check-circle-fill' %}{% endif %}
+                      {% if category == 'danger' %}{% set alert_icon = 'x-octagon-fill' %}{% endif %}
+                      {% if category == 'warning' %}{% set alert_icon = 'exclamation-triangle-fill' %}{% endif %}
+                      <div class="alert alert-{{ category }} alert-dismissible fade show d-flex align-items-center shadow-sm mb-4" role="alert">
+                        <svg class="bi flex-shrink-0 me-3" width="20" height="20" role="img" aria-label="{{ category|capitalize }} Icon"><use xlink:href="#{{ alert_icon }}"/></svg>
+                        <div class="flex-grow-1">{{ message }}</div>
+                        <button type="button" class="btn-close ms-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
          
 
