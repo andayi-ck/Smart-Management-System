@@ -307,6 +307,17 @@
                             <small class="form-text">Publicly visible. Only letters, numbers, underscores.</small>
                         {% endif %}
                     </div>
+                    <div class="mb-3">
+                        {{ form.email_address.label(class="form-label") }}
+                        {{ form.email_address(class="form-control" + (" is-invalid" if form.email_address.errors else ""), placeholder="you@example.com") }}
+                        {% if form.email_address.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.email_address.errors %}
+                                    <span>{{ error }}</span><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
                     
                 
                 
