@@ -294,6 +294,20 @@
                     <div class="login-link">
                         Already have an account? <a href="{{ url_for('login_page') }}">Log in</a>
                     </div>
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), placeholder="Choose a username") }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span><br>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <small class="form-text">Publicly visible. Only letters, numbers, underscores.</small>
+                        {% endif %}
+                    </div>
+                    
                 
                 
 
