@@ -318,6 +318,7 @@
                             </div>
                         {% endif %}
                     </div>
+                    
                     <div class="mb-3">
                         {{ form.password2.label(class="form-label") }}
                         {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else ""), placeholder="Confirm your password") }}
@@ -329,6 +330,19 @@
                             </div>
                         {% endif %}
                     </div>
+                    {% if form.role %}
+                    <div class="mb-3">
+                        {{ form.role.label(class="form-label") }}
+                        {{ form.role(class="form-select" + (" is-invalid" if form.role.errors else "")) }}
+                        {% if form.role.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.role.errors %}
+                                    <span>{{ error }}</span><br>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                     
                 
                 
