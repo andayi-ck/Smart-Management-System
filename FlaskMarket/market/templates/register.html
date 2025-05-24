@@ -318,7 +318,19 @@
                             </div>
                         {% endif %}
                     </div>
-                    
+                    <div class="mb-3">
+                        {{ form.password1.label(class="form-label") }}
+                        {{ form.password1(class="form-control" + (" is-invalid" if form.password1.errors else ""), placeholder="Create a strong password") }}
+                        {% if form.password1.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password1.errors %}
+                                    <span>{{ error }}</span><br>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <small class="form-text">Minimum 8 characters required.</small>
+                        {% endif %}
+                    </div>
                     <div class="mb-3">
                         {{ form.password2.label(class="form-label") }}
                         {{ form.password2(class="form-control" + (" is-invalid" if form.password2.errors else ""), placeholder="Confirm your password") }}
